@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Healthcare Smart Contract</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Add Web3 Script -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.9.0/web3.min.js" integrity="sha512-mUvdtCaVKd9dby/UnYGKMLkP3eT7EA6QNFN5iSEjvMf8TFPq2oZFIemWL46iypQcL8xYNdx7wQIA1oYnTXuYhg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+            
+/* Header styling */
+/* Header styling */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+
+header h1 {
+    margin: 0;
+    flex: 1;
+}
+
+header button {
+    margin-left: 10px;
+    padding: 10px;
+    background-color: #1A73E8;
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 40px;
+    width: 200px;
+}
+
+header button:first-child {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+
+
+            
+            /* Form styling */
+            form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-top: 20px;
+            }
+            
+            label {
+                margin-bottom: 10px;
+                font-weight: bold;
+            }
+            
+            input {
+                padding: 10px;
+                border: 1px solid #CCC;
+                border-radius: 5px;
+                margin-bottom: 15px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            button {
+                padding: 10px;
+                background-color: #1A73E8;
+                color: #FFF;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                width: 100%;
+            }
+            
+            button:hover {
+                opacity: 0.8;
+            }
+            
+            /* Forms visibility */
+            #add-medical-record-form, #make-payment-form, #register-doctor-form, #view-medical-record-form {
+                display: none;
+            }
+
+            #disconnect-metamask {
+                display: none;
+            }
+
+            #add-medical-record-btn, #make-payment-btn, #register-doctor-btn, #view-medical-record-btn {
+                display: none;
+            }
+
+            #medical-record-display {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Healthcare Smart Contract</h1>
+            <button id="connect-metamask">Connect to Metamask</button>
+            <button id="disconnect-metamask">Disconnect from Metamask</button>
+            <button id="register-doctor-btn">Register Doctor</button>
+            <button id="add-medical-record-btn">Add Medical Record</button>
+            <button id="view-medical-record-btn">View Medical Record</button>
+            <button id="make-payment-btn">Make Payment</button>
+        </header>
+        
+        <main>
+            <h2 id="userArea"></h2>
+            <!-- Register Doctor Form -->
+            <div id="register-doctor-form">
+                <h2>Register Doctor</h2>
+                <form>
+                    <label for="doctor-name">Doctor Name:</label>
+                    <input type="text" id="doctor-name" placeholder="Enter doctor name...">
+                    
+                    <label for="doctor-id">Doctor ID:</label>
+                    <input type="text" id="doctor-id" placeholder="Enter doctor ID...">
+                    
+                    <label for="doctor-specialty">Doctor Specialty:</label>
+                    <input type="text" id="doctor-specialty" placeholder="Enter doctor specialty...">
+                    
+                    <button id="register-doctor">Register Doctor</button>
+                </form>
+            </div>
+            <!-- Add Medical Record Form -->
+            <div id="add-medical-record-form">
+                <h2>Add Medical Record</h2>
+                <form>
+                    <label for="patient-name">Patient Name:</label>
+                    <input type="text" id="patient-name" placeholder="Enter patient name...">
+                    
+                    <label for="medical-record-id">Medical Record ID:</label>
+                    <input type="number" id="medical-record-id" placeholder="Enter patient ID...">
+
+                    <label for="patient-address">Patient Address:</label>
+                    <input type="text" id="patient-address" placeholder="Enter patient address...">
+                    
+                    <label for="patient-diagnosis">Patient diagonsis:</label>
+                    <input type="text" id="patient-diagnosis" placeholder="Enter patient diagonsis...">
+                    
+                    <label for="patient-medication">Patient Medication:</label>
+                    <input type="text" id="patient-medication" placeholder="Enter patient medication..">
+                    
+                    <button id="add-medical-record">Add Medical Record</button>
+                </form>
+            </div>
+            <!-- View Medical Record Form -->
+            <div id="view-medical-record-form">
+                <h2>View Medical Record</h2>
+                <form>
+                    <label for="medical-record-number">Medical Record ID:</label>
+                    <input type="text" id="medical-record-number" placeholder="Enter Medical Record ID...">
+                    <label for="medical-record-address">Patient Address:</label>
+                    <input type="text" id="medical-record-address" placeholder="Enter patient Wallet Address...">
+                    
+                    <button id="view-medical-record">View Medical Record</button>
+                    
+                    <!--Display Medical Record -->
+                    <div id="medical-record-display">
+                    <label for="medical-record">Medical Record:</label>
+                    <label for ="get-patient-name">Patient Name:</label>
+                    <textarea id="get-patient-name" rows="1" cols="50" placeholder="Patient Name" readonly></textarea>
+                    <label for ="get-patient-diagnosis">Patient Diagnosis:</label>
+                    <textarea id="get-patient-diagnosis" rows="1" cols="50" placeholder="Patient Diagnosis" readonly></textarea>
+                    <label for ="get-patient-medication">Patient Medication:</label>
+                    <textarea id="get-patient-medication" rows="1" cols="50" placeholder="Patient Medication" readonly></textarea>
+                    </div>
+                </form>
+            </div>
+            <!-- Make Payment Form -->
+            <div id="make-payment-form">
+                <h2>Make Payment</h2>
+                <form>
+                    <label for="medical-record-id">Patient ID:</label>
+                    <input type="text" id="medical-record-id" placeholder="Enter patient ID...">
+                    
+                    <label for="amount">Amount:</label>
+                    <input type="text" id="amount" placeholder="Enter payment amount...">
+                    
+                    <button id="make-payment">Make Payment</button>
+                </form>
+            </div>
+        </main>
+        
+        <script>
+            const addMedicalRecordBtn = document.getElementById('add-medical-record-btn');
+            const makePaymentBtn = document.getElementById('make-payment-btn');
+            const disconnectMetamaskBtn = document.getElementById('disconnect-metamask');
+            const registerDoctorBtn = document.getElementById('register-doctor-btn');
+            const viewMedicalRecordBtn = document.getElementById('view-medical-record-btn');
+            const addMedicalRecordForm = document.getElementById('add-medical-record-form');
+            const makePaymentForm = document.getElementById('make-payment-form');
+            const registerDoctorForm = document.getElementById('register-doctor-form');
+            const viewMedicalRecordForm = document.getElementById('view-medical-record-form');
+            const medicalRecordDisplay = document.getElementById('medical-record-display');
+
+            ///////////////////////////////// FORMS VISIBILITY /////////////////////////////////
+            
+            addMedicalRecordBtn.addEventListener('click', () => {
+                addMedicalRecordForm.style.display = 'block';
+                makePaymentForm.style.display = 'none';
+                registerDoctorForm.style.display = 'none';
+                viewMedicalRecordForm.style.display = 'none';
+            });
+
+            makePaymentBtn.addEventListener('click', () => {
+                makePaymentForm.style.display = 'block';
+                addMedicalRecordForm.style.display = 'none';
+                registerDoctorForm.style.display = 'none';
+                viewMedicalRecordForm.style.display = 'none';
+            });
+
+            registerDoctorBtn.addEventListener('click', () => {
+                registerDoctorForm.style.display = 'block';
+                addMedicalRecordForm.style.display = 'none';
+                makePaymentForm.style.display = 'none';
+                viewMedicalRecordForm.style.display = 'none';
+            });
+
+            viewMedicalRecordBtn.addEventListener('click', () => {
+                viewMedicalRecordForm.style.display = 'block';
+                addMedicalRecordForm.style.display = 'none';
+                makePaymentForm.style.display = 'none';
+                registerDoctorForm.style.display = 'none';
+            });
+            ///////////////////////////////// METAMASK /////////////////////////////////
+            // Connect to Metamask
+            const connectMetamaskBtn = document.getElementById('connect-metamask');
+            
+            if (connectMetamaskBtn.innerHTML == 'Connect to Metamask'){
+                connectMetamaskBtn.addEventListener('click', async () => {
+                    // Check if Metamask is installed
+                    if (typeof window.ethereum !== 'undefined') {
+                        const accounts = await ethereum.request({method: "eth_requestAccounts"});
+                    account = accounts[0];
+                    document.getElementById("userArea").innerHTML = `User Account: ${account}`;
+                    // hide connect to Metamask button
+                    connectMetamaskBtn.style.display = 'none';
+                    // show disconnect from Metamask button
+                    disconnectMetamaskBtn.style.display = 'block';
+                    // show add medical record button
+                    addMedicalRecordBtn.style.display = 'block';
+                    // show make payment button
+                    makePaymentBtn.style.display = 'block';
+                    // show register doctor button
+                    registerDoctorBtn.style.display = 'block';
+                    // show view medical record button
+                    viewMedicalRecordBtn.style.display = 'block';
+                    } else {
+                        alert('Please install Metamask!');
+                    }
+                });
+            }
+
+            // Disconnect from Metamask
+            disconnectMetamaskBtn.addEventListener('click', () => {
+                // hide disconnect from Metamask button
+                disconnectMetamaskBtn.style.display = 'none';
+                // show connect to Metamask button
+                connectMetamaskBtn.style.display = 'block';
+                // hide add medical record button
+                addMedicalRecordBtn.style.display = 'none';
+                // hide make payment button
+                makePaymentBtn.style.display = 'none';
+                // hide add medical record form
+                addMedicalRecordForm.style.display = 'none';
+                // hide make payment form
+                makePaymentForm.style.display = 'none';
+                // hide register doctor form
+                registerDoctorForm.style.display = 'none';
+
+                // hide view medical record form
+
+                viewMedicalRecordForm.style.display = 'none';
+            });
+
+            ///////////////////////////////// REGISTER DOCTOR /////////////////////////////////
+
+            // Register Doctor
+
+            const registerDoctor = document.getElementById('register-doctor'); 
+
+            registerDoctor.addEventListener('click', async () => {
+                const doctorName = document.getElementById('doctor-name').value;
+                const doctorId = document.getElementById('doctor-id').value;
+                const doctorSpecialty = document.getElementById('doctor-specialty').value;
+                console.log(doctorName, doctorId, doctorSpecialty);
+                await connectContract();
+
+                // get the account from user area
+                const account = document.getElementById('userArea').innerHTML.split(' ')[2];
+                console.log(account);
+
+                await contract.methods.registerDoctor(doctorId, doctorName, doctorSpecialty).send({from: account});
+            });
+
+            ///////////////////////////////// ADD MEDICAL RECORD /////////////////////////////////
+            // Add Medical Record
+            const addMedicalRecord = document.getElementById('add-medical-record');
+
+            const connectContract = async () => {
+            const ABI = [
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_medicalRecordId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "patientAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_patientName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_diagnosis",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_medication",
+				"type": "string"
+			}
+		],
+		"name": "addMedicalRecord",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "makePayment",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_id",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_speciality",
+				"type": "string"
+			}
+		],
+		"name": "registerDoctor",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "doctors",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "id",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "speciality",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_patientAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_patientId",
+				"type": "uint256"
+			}
+		],
+		"name": "getMedicalRecord",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "patients",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "isPaid",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]; // Taking ABI from Remix
+            const Address = "0xF63DEe36eFAf76560058315bDd89AeaeEB604254"; // Taking Address from Remix 
+            window.web3 = await new Web3(window.ethereum);
+            window.contract = await new window.web3.eth.Contract(ABI, Address);
+        }
+            
+            addMedicalRecord.addEventListener('click', async () => {
+                const patientName = document.getElementById('patient-name').value;
+                const patientAddress = document.getElementById('patient-address').value;
+                const medicalRecordId = document.getElementById('medical-record-id').value;
+                const diagonsis = document.getElementById('patient-diagnosis').value;
+                const medication = document.getElementById('patient-medication').value;
+                
+                await connectContract();
+
+                // get the account from user area
+                const account = document.getElementById('userArea').innerHTML.split(' ')[2];
+                console.log(account);
+
+                await contract.methods.addMedicalRecord(medicalRecordId, patientAddress, patientName, diagonsis, medication).send({from: account}).then((res) => {
+                    alert('Medical Record Added');
+                });
+            });
+
+            ///////////////////////////////// MAKE PAYMENT /////////////////////////////////
+
+            // Make Payment
+
+            const makePayment = document.getElementById('make-payment');
+
+            makePayment.addEventListener('click', async () => {
+                const medicalRecordId = document.getElementById('medical-record-id').value;
+                const amount = document.getElementById('amount').value;
+                
+                await connectContract();
+
+                // get the account from user area
+                const account = document.getElementById('userArea').innerHTML.split(' ')[2];
+                console.log(account);
+
+                await contract.methods.makePayment().send({from: account, value: web3.utils.toWei(amount, 'ether')}).then((res) => {
+                    alert('Payment Made');
+                });
+            });
+            
+            ///////////////////////////////// VIEW MEDICAL RECORD /////////////////////////////////
+
+            // View Medical Record
+
+            const viewMedicalRecord = document.getElementById('view-medical-record');
+
+            viewMedicalRecord.addEventListener('click', async () => {
+                const medicalRecordId = document.getElementById('medical-record-number').value;
+                const medicalRecordAddress = document.getElementById('medical-record-address').value;
+                console.log(medicalRecordId)
+                
+                await connectContract();
+
+                // get the account from user area
+                const account = document.getElementById('userArea').innerHTML.split(' ')[2];
+                console.log(account);
+
+                await contract.methods.getMedicalRecord(medicalRecordAddress, medicalRecordId).call({from: account}).then((res) => {
+                    console.log(res);
+                    medicalRecordDisplay.style.display = 'block';
+                    document.getElementById('get-patient-name').value = res[0];
+                    document.getElementById('get-patient-diagnosis').value = res[1];
+                    document.getElementById('get-patient-medication').value = res[2];
+                });
+            });
+
+        </script>
+    </body>
+</html>

@@ -1,0 +1,26 @@
+Get Transactions.sol Ready 
+
+Connect Ganache to Metamask 
+
+Terminal - npm install express --save
+
+Create Files index.html / server.js
+
+New File Transactions.sol 
+
+Update Server.js 
+
+
+Details of executing the application in detail are determine in Readme.md file
+For  localhost:-
+Step 1 : Open website http://localhost:5000/?#medical-record
+Step 2: Make sure you are connected to website and have enough funds.
+Step 3: Register yourself as Doctor
+Step 4: Wait for transaction to confirm
+Step 5: Register your paitent (use other ethereum address)
+Step 6: ensure transaction is confirmed
+Step 7: View details by providing medical record ID and patient ethereum address stored in step 5
+Step 8: Connect to the application using the paitent ethereum address
+Step 9: Make Payment.
+
+For heroku:-
